@@ -20,25 +20,38 @@
           <option value="en">English</option>
         </select>
       </label>
-      <output v-if="result">{{ result }}</output>
+      <label v-if="result" class="wide">
+        <span>Result:</span>
+        <output name="result">{{ result }}</output>
+      </label>
     </form>
   </main>
   <footer>Made by @JRasmusBm</footer>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-// import { translate } from "../utils/translate";
+import { defineComponent, ref, unref } from "vue";
+import * as translateUtils from "../utils/translate";
 
 export default defineComponent({
   setup() {
-    const query = ref("");
-    const from = ref("en");
-    const to = ref("se");
+    const query = ref<string>("");
+    const from = ref<translateUtils.Language>("en");
+    const to = ref<translateUtils.Language>("se");
     const result = ref<null | string>(null);
 
-    function submit(e) {
+    function submit(e: Event) {
       e.preventDefault();
+
+      translateUtils
+        .translate({
+          query: unref(query),
+          from: unref(from),
+          to: unref(to),
+        })
+        .then((value) => {
+          result.value = value;
+        });
     }
 
     return {
@@ -85,7 +98,11 @@ main form label.wide {
 }
 
 main form input,
-main form select {
+main form select,
+main form output {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 4rem;
   width: 100%;
   border-radius: 1rem;

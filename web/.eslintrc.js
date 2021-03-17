@@ -23,6 +23,7 @@ module.exports = {
       "warn",
       {
         trailingComma: "es5",
+        arrowParens: "always",
       },
     ],
   },
